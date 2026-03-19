@@ -5,13 +5,24 @@ export function drawDecals(ctx: CanvasRenderingContext2D, decals: readonly Decal
   for (const d of decals) {
     ctx.save()
     ctx.globalAlpha = d.alpha
-    ctx.translate(d.x * tileSize, d.y * tileSize)
+    const cx = (d.x + 0.5) * tileSize
+    const cy = (d.y + 0.5) * tileSize
+    ctx.translate(cx, cy)
+    ctx.rotate(d.rotation)
 
-    // Simple geometric splats: small rounded blobs.
+    // Simple geometric splats: small rounded blobs, with variant-specific scale.
     ctx.fillStyle = COLORS.splat
+    const r = d.variant === 'death' ? tileSize * 0.52 : d.variant === 'hit' ? tileSize * 0.34 : tileSize * 0.28
+    const w = r
+    const h = d.variant === 'slide' ? r * 0.72 : r
     ctx.beginPath()
-    const r = d.variant === 'death' ? tileSize * 0.45 : tileSize * 0.30
-    ctx.roundRect(tileSize * 0.5 - r * 0.5, tileSize * 0.5 - r * 0.5, r, r, r * 0.25)
+    ctx.roundRect(-w * 0.5, -h * 0.5, w, h, Math.min(w, h) * 0.25)
+    ctx.fill()
+
+    // Inner darker core for depth.
+    ctx.fillStyle = 'rgba(0,0,0,0.10)'
+    ctx.beginPath()
+    ctx.roundRect(-w * 0.22, -h * 0.22, w * 0.44, h * 0.44, Math.min(w, h) * 0.18)
     ctx.fill()
 
     ctx.restore()

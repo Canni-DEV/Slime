@@ -14,6 +14,15 @@ export class Game {
   private state: GameState
   private decals: Decal[] = []
 
+  private moveAnim:
+    | null
+    | {
+        readonly from: GameState
+        readonly to: GameState
+        readonly startMs: number
+        readonly durationMs: number
+      } = null
+
   private transitionStartMs: number | null = null
   private transitionDurationMs: number = 0
 
@@ -125,6 +134,11 @@ export class Game {
   }
 
   update(nowMs: number) {
+    if (this.moveAnim) {
+      const elapsed = nowMs - this.moveAnim.startMs
+      if (elapsed >= this.moveAnim.durationMs) this.moveAnim = null
+    }
+
     const actions = this.input.pollActions()
     for (const action of actions) {
       if (action.type === 'restart') {
@@ -134,7 +148,7 @@ export class Game {
 
       if (action.type === 'undo') {
         // Undo solo en estado estable.
-        if (canUndo(this.state)) {
+        if (!this.moveAnim && canUndo(this.state)) {
           this.decalReset()
           this.state = undoOneStep(this.state)
         }
@@ -142,22 +156,68 @@ export class Game {
       }
 
       if (action.type === 'move') {
+        // No encadenar inputs mientras una animación está en curso.
+        if (this.moveAnim) continue
+
+        const from = this.state
         const result = tryApplyMove(this.state, action)
-        this.state = result.nextState
+        const to = result.nextState
+
+        // Si no hubo cambio, no animamos.
+        if (to === from) continue
+
+        this.state = to
         this.decals = this.decals.concat(result.decals).slice(-250)
+        this.moveAnim = { from, to, startMs: nowMs, durationMs: TRANSITION.slideMs }
       }
     }
 
     // Al final, avanzamos/transicionamos por tiempo. Así las entradas de un frame
     // se evalúan con el estado anterior (si no era `playing`, el move se ignora).
+    if (this.moveAnim) return
     this.updateTransition(nowMs)
+  }
+
+  private getMoveAnimProgress01(nowMs: number): number {
+    if (!this.moveAnim) return 1
+    const elapsed = nowMs - this.moveAnim.startMs
+    return Math.max(0, Math.min(1, elapsed / this.moveAnim.durationMs))
+  }
+
+  private buildRenderState(nowMs: number): GameState {
+    if (!this.moveAnim) return this.state
+    const t = this.getMoveAnimProgress01(nowMs)
+    const from = this.moveAnim.from
+    const to = this.moveAnim.to
+
+    // During movement we keep the *from* form until the end, so the slime feels
+    // like a mass sliding, then reshaping at impact.
+    const player = {
+      ...to.player,
+      x: from.player.x + (to.player.x - from.player.x) * t,
+      y: from.player.y + (to.player.y - from.player.y) * t,
+      form: t >= 1 ? to.player.form : from.player.form,
+      lastWallHitDir: t >= 1 ? to.player.lastWallHitDir : from.player.lastWallHitDir,
+    }
+
+    // Interpolate blocks too (only those that moved).
+    const byIdFrom = new Map(from.entities.map((e) => [e.id, e] as const))
+    const entities = to.entities.map((e) => {
+      const prev = byIdFrom.get(e.id)
+      if (!prev || prev.type !== e.type) return e
+      if (t >= 1) return e
+      return { ...e, x: prev.x + (e.x - prev.x) * t, y: prev.y + (e.y - prev.y) * t }
+    })
+
+    return { ...to, player, entities }
   }
 
   render(nowMs: number) {
     const progress01 = this.getTransitionProgress01(nowMs)
+    const renderState = this.buildRenderState(nowMs)
     renderFrame({
       ctx: this.ctx,
-      state: this.state,
+      state: renderState,
       decals: this.decals,
       tileSize: this.tileSize,
       transitionProgress01: progress01,

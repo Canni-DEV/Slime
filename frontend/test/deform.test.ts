@@ -41,7 +41,14 @@ describe('deformOnWallHit', () => {
       lastWallHitDir: r1.nextLastWallHitDir,
       hitDir: 'left',
     })
-    expect(r2.next).toEqual({ axis: 'square', thickness: 3 })
+    expect(r2.next).toEqual({ axis: 'vertical', thickness: 3 })
+
+    const r3 = deformOnWallHit({
+      current: r2.next,
+      lastWallHitDir: r2.nextLastWallHitDir,
+      hitDir: 'right',
+    })
+    expect(r3.next).toEqual({ axis: 'square', thickness: 3 })
   })
 })
 

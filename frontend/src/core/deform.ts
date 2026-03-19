@@ -45,10 +45,11 @@ export function deformOnWallHit(params: {
   }
 
   if (oppositeDir(params.lastWallHitDir) === params.hitDir) {
-    const nextThickness = clampThickness(params.current.thickness + 1)
-    if (nextThickness === 3) {
+    // Restore is gradual: 2 -> 3 (still elongated), then only the *next* opposite hit returns to square.
+    if (params.current.thickness === 3) {
       return { next: { axis: 'square', thickness: 3 }, nextLastWallHitDir: params.hitDir }
     }
+    const nextThickness = clampThickness(params.current.thickness + 1)
     return { next: { axis: targetAxis, thickness: nextThickness }, nextLastWallHitDir: params.hitDir }
   }
 

@@ -1,6 +1,7 @@
-import type { Direction, LevelData, PlayerState, TileType } from './types'
+import type { Direction, LevelData, PlayerState } from './types'
 import { canFormUseTile } from './constants'
 import { getOccupiedCellsTopLeft } from './footprint'
+import { isGoalTile, isHazardTile, isPassageTile, isSolidTileForPlayer, tileAt } from './tileRules'
 
 export type SlideStopReason =
   | { readonly type: 'blocked' }
@@ -38,23 +39,6 @@ function dirDelta(dir: Direction): { dx: number; dy: number } {
   }
 }
 
-function tileAt(level: LevelData, x: number, y: number): TileType {
-  if (x < 0 || y < 0 || x >= level.width || y >= level.height) return 'void'
-  return level.tiles[y][x]
-}
-
-function isSolidTile(tile: TileType): boolean {
-  return tile === 'wall' || tile === 'stone' || tile === 'door_closed' || tile === 'void'
-}
-
-function isHazardTile(tile: TileType): boolean {
-  return tile === 'spike' || tile === 'plant'
-}
-
-function isPassageTile(tile: TileType): boolean {
-  return tile === 'passage_h' || tile === 'passage_v' || tile === 'passage_1x1'
-}
-
 function findBlockAt(
   entities: readonly BlockEntity[],
   x: number,
@@ -67,7 +51,7 @@ function canPlayerOccupy(ctx: SlideContext, player: PlayerState): boolean {
   const occupied = getOccupiedCellsTopLeft(player.x, player.y, player.form)
   for (const cell of occupied) {
     const tile = tileAt(ctx.level, cell.x, cell.y)
-    if (isSolidTile(tile)) return false
+    if (isSolidTileForPlayer(tile)) return false
     if (!canFormUseTile(player.form, tile)) return false
     if (findBlockAt(ctx.entities, cell.x, cell.y)) return false
   }
@@ -81,7 +65,7 @@ function detectInteraction(level: LevelData, player: PlayerState): SlideStopReas
   for (const c of occupied) {
     const t = tileAt(level, c.x, c.y)
     if (isHazardTile(t)) return { type: 'hazard' }
-    if (t === 'goal') sawGoal = true
+    if (isGoalTile(t)) sawGoal = true
     if (isPassageTile(t)) sawPassage = true
   }
   if (sawGoal) return { type: 'goal' }
@@ -115,7 +99,7 @@ function attemptPushBlocks(
     const destX = b.x + dx
     const destY = b.y + dy
     const destTile = tileAt(level, destX, destY)
-    if (isSolidTile(destTile)) return null
+    if (isSolidTileForPlayer(destTile)) return null
     const occupant = findBlockAt(entities, destX, destY)
     if (occupant && !toPushIds.has(occupant.id)) return null
   }

@@ -49,9 +49,13 @@ function assertIsEntity(e: unknown, path: string): asserts e is EntityState {
   assert(e !== null && typeof e === 'object', `Invalid entity at ${path}`)
   const obj = e as Record<string, unknown>
   assertIsString(obj.id, `${path}.id`)
-  assert(obj.type === 'block', `Only 'block' entities are supported at ${path}.type`)
+  assert(
+    obj.type === 'block' || obj.type === 'torch' || obj.type === 'sign',
+    `Unsupported entity type at ${path}.type`,
+  )
   assertIsNumber(obj.x, `${path}.x`)
   assertIsNumber(obj.y, `${path}.y`)
+  if ('value' in obj && obj.value !== undefined) assertIsNumber(obj.value, `${path}.value`)
 }
 
 function assertIsPlayerStart(p: unknown, path: string): asserts p is PlayerState {

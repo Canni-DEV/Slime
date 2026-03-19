@@ -18,8 +18,9 @@ export function getFootprintSize(form: SlimeForm): FootprintSize {
   // vertical@2: 1x3, vertical@1: 1x4
   // horizontal@2: 3x1, horizontal@1: 4x1
   if (form.axis === 'square') return { w: 2, h: 2 }
-  if (form.axis === 'vertical') return { w: 1, h: form.thickness === 2 ? 3 : 4 }
-  return { w: form.thickness === 2 ? 3 : 4, h: 1 }
+  // thickness=3 is "least compressed" but still elongated (avoid snapping to square).
+  if (form.axis === 'vertical') return { w: 1, h: form.thickness === 1 ? 4 : 3 }
+  return { w: form.thickness === 1 ? 4 : 3, h: 1 }
 }
 
 export function getFootprintRect(x: number, y: number, form: SlimeForm): FootprintRect {

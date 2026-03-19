@@ -15,7 +15,10 @@
     ["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"]
   ],
   "entities": [
-    { "id": "block_1", "type": "block", "x": 7, "y": 4 }
+    { "id": "block_1", "type": "block", "x": 7, "y": 4 },
+    { "id": "t1", "type": "torch", "x": 2, "y": 1, "value": 1.0 },
+    { "id": "t2", "type": "torch", "x": 11, "y": 1, "value": 0.9 },
+    { "id": "s1", "type": "sign", "x": 10, "y": 4, "value": 9 }
   ],
   "playerStart": { "x": 1, "y": 4, "form": { "axis": "square", "thickness": 3 }, "alive": true, "lastWallHitDir": null }
 }

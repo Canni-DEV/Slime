@@ -14,7 +14,11 @@
     ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall"],
     ["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"]
   ],
-  "entities": [],
+  "entities": [
+    { "id": "t1", "type": "torch", "x": 2, "y": 1, "value": 1.0 },
+    { "id": "t2", "type": "torch", "x": 11, "y": 1, "value": 0.9 },
+    { "id": "s1", "type": "sign", "x": 10, "y": 4, "value": 5 }
+  ],
   "playerStart": { "x": 1, "y": 6, "form": { "axis": "square", "thickness": 3 }, "alive": true, "lastWallHitDir": null }
 }
 

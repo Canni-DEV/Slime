@@ -24,7 +24,7 @@ export type TileType =
   | 'door_closed'
   | 'door_open'
 
-export type EntityType = 'player' | 'block'
+export type EntityType = 'player' | 'block' | 'torch' | 'sign'
 
 export interface Cell {
   readonly x: number
@@ -44,6 +44,8 @@ export interface EntityState {
   readonly type: EntityType
   readonly x: number
   readonly y: number
+  // Optional metadata for decorative entities.
+  readonly value?: number
 }
 
 export interface LevelData {

@@ -5,7 +5,7 @@ export const RENDER_PADDING = 12
 export const TRANSITION = {
   deathMs: 450,
   winMs: 450,
-  slideMs: 250,
+  slideMs: 600,
 }
 
 export const HUD = {
