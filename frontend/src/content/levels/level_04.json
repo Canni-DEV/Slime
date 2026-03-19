@@ -1,0 +1,16 @@
+{
+  "id": "level_04",
+  "width": 8,
+  "height": 6,
+  "tiles": [
+    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
+    ["wall", "floor", "floor", "floor", "wall", "wall", "floor", "wall"],
+    ["wall", "floor", "floor", "passage_1x1", "wall", "wall", "floor", "wall"],
+    ["wall", "floor", "floor", "passage_1x1", "floor", "floor", "goal", "wall"],
+    ["wall", "floor", "floor", "floor", "wall", "wall", "floor", "wall"],
+    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"]
+  ],
+  "entities": [],
+  "playerStart": { "x": 2, "y": 2, "shape": "normal", "alive": true }
+}
+

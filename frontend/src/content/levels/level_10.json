@@ -1,0 +1,16 @@
+{
+  "id": "level_10",
+  "width": 8,
+  "height": 6,
+  "tiles": [
+    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
+    ["wall", "floor", "floor", "floor", "floor", "floor", "floor", "wall"],
+    ["wall", "floor", "floor", "floor", "stone", "floor", "goal", "wall"],
+    ["wall", "floor", "floor", "floor", "floor", "floor", "floor", "wall"],
+    ["wall", "floor", "floor", "floor", "floor", "floor", "floor", "wall"],
+    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"]
+  ],
+  "entities": [],
+  "playerStart": { "x": 2, "y": 2, "shape": "normal", "alive": true }
+}
+
