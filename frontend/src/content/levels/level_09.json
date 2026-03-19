@@ -1,18 +1,22 @@
 {
   "id": "level_09",
-  "width": 8,
-  "height": 6,
+  "width": 14,
+  "height": 10,
   "tiles": [
-    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
-    ["wall", "floor", "floor", "floor", "floor", "floor", "floor", "wall"],
-    ["wall", "floor", "floor", "floor", "floor", "floor", "goal", "wall"],
-    ["wall", "floor", "floor", "floor", "floor", "wall", "floor", "wall"],
-    ["wall", "floor", "floor", "floor", "floor", "wall", "floor", "wall"],
-    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"]
+    ["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"],
+    ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall"],
+    ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall"],
+    ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall"],
+    ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","goal","goal","wall"],
+    ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","goal","goal","wall"],
+    ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall"],
+    ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall"],
+    ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall"],
+    ["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"]
   ],
   "entities": [
-    { "id": "block_1", "type": "block", "x": 4, "y": 2 }
+    { "id": "block_1", "type": "block", "x": 7, "y": 4 }
   ],
-  "playerStart": { "x": 4, "y": 3, "shape": "normal", "alive": true }
+  "playerStart": { "x": 1, "y": 4, "form": { "axis": "square", "thickness": 3 }, "alive": true, "lastWallHitDir": null }
 }
 

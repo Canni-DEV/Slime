@@ -1,5 +1,5 @@
 import type { Decal, GameState } from '../core/types'
-import { getOccupiedCells } from '../core/constants'
+import { getOccupiedCellsTopLeft } from '../core/footprint'
 import { COLORS } from '../app/config'
 import { drawDecals } from './decals'
 import { drawHud } from './hud'
@@ -85,7 +85,7 @@ function drawPlayer(ctx: CanvasRenderingContext2D, state: GameState, tileSize: n
   ctx.save()
   ctx.globalAlpha = player.alive ? 1 : 0.75
 
-  const occupied = getOccupiedCells(player.x, player.y, player.shape)
+  const occupied = getOccupiedCellsTopLeft(player.x, player.y, player.form)
   const minX = Math.min(...occupied.map((c) => c.x))
   const minY = Math.min(...occupied.map((c) => c.y))
   const maxX = Math.max(...occupied.map((c) => c.x))
@@ -96,18 +96,53 @@ function drawPlayer(ctx: CanvasRenderingContext2D, state: GameState, tileSize: n
   const px = minX * tileSize
   const py = minY * tileSize
 
-  // Outline.
+  const rBase = Math.max(4, Math.floor(tileSize * 0.26))
+  const squeeze = player.form.axis === 'square' ? 0 : (3 - player.form.thickness) // 0..2
+  const insetUnit = Math.floor(tileSize * 0.08)
+  const inset = squeeze * insetUnit
+
+  const insetL = player.lastWallHitDir === 'left' ? inset : 0
+  const insetR = player.lastWallHitDir === 'right' ? inset : 0
+  const insetT = player.lastWallHitDir === 'up' ? inset : 0
+  const insetB = player.lastWallHitDir === 'down' ? inset : 0
+
+  const outlinePad = 2
+  const bodyPad = 4
+
+  const ox = px + outlinePad + insetL
+  const oy = py + outlinePad + insetT
+  const ow = w - outlinePad * 2 - insetL - insetR
+  const oh = h - outlinePad * 2 - insetT - insetB
+
+  // Outline (darker).
   ctx.fillStyle = COLORS.slimeDark
-  const r = Math.max(4, Math.floor(tileSize * 0.25))
   ctx.beginPath()
-  ctx.roundRect(px + 2, py + 2, w - 4, h - 4, r)
+  ctx.roundRect(ox, oy, ow, oh, rBase)
   ctx.fill()
 
-  // Body.
+  // Body (brighter).
   ctx.fillStyle = COLORS.slime
   ctx.beginPath()
-  ctx.roundRect(px + 4, py + 4, w - 8, h - 8, r * 0.9)
+  ctx.roundRect(ox + (bodyPad - outlinePad), oy + (bodyPad - outlinePad), ow - (bodyPad - outlinePad) * 2, oh - (bodyPad - outlinePad) * 2, rBase * 0.9)
   ctx.fill()
+
+  // Face (simple eyes + mouth), centered in current body rect.
+  const cx = ox + ow * 0.5
+  const cy = oy + oh * 0.55
+  const eyeDx = Math.min(tileSize * 0.22, ow * 0.18)
+  const eyeR = Math.max(2, Math.floor(Math.min(ow, oh) * 0.06))
+
+  ctx.fillStyle = 'rgba(8, 10, 14, 0.7)'
+  ctx.beginPath()
+  ctx.arc(cx - eyeDx, cy - eyeR, eyeR, 0, Math.PI * 2)
+  ctx.arc(cx + eyeDx, cy - eyeR, eyeR, 0, Math.PI * 2)
+  ctx.fill()
+
+  // Mouth: changes with thickness (more stressed when thinner).
+  const mouthW = Math.min(ow * 0.38, tileSize * 0.55)
+  const mouthH = Math.max(2, Math.floor((2 + squeeze) * 1.6))
+  const mouthY = cy + eyeR * 1.6
+  ctx.fillRect(cx - mouthW * 0.5, mouthY, mouthW, mouthH)
 
   ctx.restore()
 }

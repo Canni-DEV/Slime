@@ -42,7 +42,10 @@ export class Game {
     return {
       levelIndex,
       level,
-      player: clonePlayer(level.playerStart),
+      player: {
+        ...clonePlayer(level.playerStart),
+        lastWallHitDir: null,
+      },
       entities: cloneEntities(level.entities),
       status: 'playing',
       moveCount: 0,

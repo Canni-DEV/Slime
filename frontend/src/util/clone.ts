@@ -4,8 +4,12 @@ export function clonePlayer(player: PlayerState): PlayerState {
   return {
     x: player.x,
     y: player.y,
-    shape: player.shape,
+    form: {
+      axis: player.form.axis,
+      thickness: player.form.thickness,
+    },
     alive: player.alive,
+    lastWallHitDir: player.lastWallHitDir,
   }
 }
 

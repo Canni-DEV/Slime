@@ -1,16 +1,20 @@
 {
   "id": "level_07",
-  "width": 8,
-  "height": 6,
+  "width": 14,
+  "height": 10,
   "tiles": [
-    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
-    ["wall", "floor", "floor", "floor", "floor", "floor", "floor", "wall"],
-    ["wall", "wall", "floor", "passage_v", "floor", "floor", "goal", "wall"],
-    ["wall", "floor", "floor", "passage_v", "floor", "floor", "goal", "wall"],
-    ["wall", "floor", "floor", "floor", "spike", "floor", "floor", "wall"],
-    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"]
+    ["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"],
+    ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall"],
+    ["wall","floor","wall","wall","wall","wall","wall","wall","floor","floor","floor","floor","floor","wall"],
+    ["wall","floor","wall","floor","floor","floor","floor","wall","floor","floor","floor","floor","floor","wall"],
+    ["wall","floor","wall","floor","spike","spike","floor","wall","floor","floor","floor","goal","goal","wall"],
+    ["wall","floor","wall","floor","spike","spike","floor","wall","floor","floor","floor","goal","goal","wall"],
+    ["wall","floor","wall","floor","floor","floor","floor","wall","floor","floor","floor","floor","floor","wall"],
+    ["wall","floor","wall","wall","wall","wall","wall","wall","floor","floor","floor","floor","floor","wall"],
+    ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall"],
+    ["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"]
   ],
   "entities": [],
-  "playerStart": { "x": 2, "y": 2, "shape": "normal", "alive": true }
+  "playerStart": { "x": 1, "y": 4, "form": { "axis": "square", "thickness": 3 }, "alive": true, "lastWallHitDir": null }
 }
 

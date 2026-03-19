@@ -59,9 +59,30 @@ function assertIsPlayerStart(p: unknown, path: string): asserts p is PlayerState
   const obj = p as Record<string, unknown>
   assertIsNumber(obj.x, `${path}.x`)
   assertIsNumber(obj.y, `${path}.y`)
-  assertIsString(obj.shape, `${path}.shape`)
-  assert(obj.shape === 'normal' || obj.shape === 'horizontal' || obj.shape === 'vertical', `Invalid player shape at ${path}.shape`)
+  assert(obj.form !== null && typeof obj.form === 'object', `Invalid player form at ${path}.form`)
+  const form = obj.form as Record<string, unknown>
+  assertIsString(form.axis, `${path}.form.axis`)
+  assert(
+    form.axis === 'square' || form.axis === 'horizontal' || form.axis === 'vertical',
+    `Invalid player axis at ${path}.form.axis`,
+  )
+  assertIsNumber(form.thickness, `${path}.form.thickness`)
+  assert(
+    form.thickness === 1 || form.thickness === 2 || form.thickness === 3,
+    `Invalid player thickness at ${path}.form.thickness`,
+  )
   assert(typeof obj.alive === 'boolean', `Invalid player alive flag at ${path}.alive`)
+  // Optional runtime field; Game will override to null on load.
+  if ('lastWallHitDir' in obj && obj.lastWallHitDir !== null) {
+    assertIsString(obj.lastWallHitDir, `${path}.lastWallHitDir`)
+    assert(
+      obj.lastWallHitDir === 'left' ||
+        obj.lastWallHitDir === 'right' ||
+        obj.lastWallHitDir === 'up' ||
+        obj.lastWallHitDir === 'down',
+      `Invalid lastWallHitDir at ${path}.lastWallHitDir`,
+    )
+  }
 }
 
 function coerceLevelData(raw: unknown, path: string): LevelData {
@@ -88,13 +109,19 @@ function coerceLevelData(raw: unknown, path: string): LevelData {
   const entities = obj.entities as EntityState[]
   const playerStart = obj.playerStart as PlayerState
 
+  // Normalize optional fields for deterministic state.
+  const normalizedPlayerStart: PlayerState = {
+    ...playerStart,
+    lastWallHitDir: null,
+  }
+
   return {
     id: obj.id,
     width,
     height,
     tiles,
     entities,
-    playerStart,
+    playerStart: normalizedPlayerStart,
   }
 }
 

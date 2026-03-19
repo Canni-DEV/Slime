@@ -1,6 +1,13 @@
 export type Direction = 'up' | 'down' | 'left' | 'right'
 
-export type SlimeShape = 'normal' | 'horizontal' | 'vertical'
+export type SlimeAxis = 'square' | 'horizontal' | 'vertical'
+
+export type SlimeThickness = 1 | 2 | 3
+
+export interface SlimeForm {
+  readonly axis: SlimeAxis
+  readonly thickness: SlimeThickness
+}
 
 export type TileType =
   | 'void'
@@ -27,8 +34,9 @@ export interface Cell {
 export interface PlayerState {
   readonly x: number
   readonly y: number
-  readonly shape: SlimeShape
+  readonly form: SlimeForm
   readonly alive: boolean
+  readonly lastWallHitDir: Direction | null
 }
 
 export interface EntityState {
